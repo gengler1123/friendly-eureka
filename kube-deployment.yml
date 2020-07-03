@@ -1,0 +1,231 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: psql
+  labels:
+    app: template-psql
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+      name: tempate-psql
+  selector:
+    app: template-psql
+  clusterIP: None
+
+
+---
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: psql
+  labels:
+    app: template-psql
+spec:
+  template:
+    metadata:
+      labels:
+        app: template-psql
+    spec:
+      containers:
+      - name: psql
+        image: gengler1123/template_psql
+        imagePullPolicy: Always
+        env:
+          - name: POSTGRES_PASSWORD
+            value: password
+        ports:
+        - containerPort: 5432
+          name: psql
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: template-redis
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+      name: tempate-redis
+  selector:
+    app: template-redis
+  clusterIP: None
+
+
+---
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: template-redis
+  labels:
+    app: template-redis
+spec:
+  template:
+    metadata:
+      labels:
+        app: template-redis
+    spec:
+      containers:
+      - name: template-redis
+        image: gengler1123/template_redis
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379
+          name: template-redis
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-01
+  labels:
+    app: service-01-api
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: service-01
+  selector:
+    app: service-01-api
+  clusterIP: None
+
+
+---
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: service-01
+  labels:
+    app: service-01-api
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: service-01-api
+    spec:
+      containers:
+      - name: service-01
+        image: gengler1123/template_service_01
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+          name: api
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-02
+  labels:
+    app: service-02-api
+spec:
+  ports:
+    - port: 8000
+      targetPort: 8000
+      name: service-02
+  selector:
+    app: service-02-api
+  clusterIP: None
+
+
+---
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: service-02
+  labels:
+    app: service-02-api
+spec:
+  replicas: 5
+  template:
+    metadata:
+      labels:
+        app: service-02-api
+    spec:
+      containers:
+      - name: service-02
+        image: gengler1123/template_service_02
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: api
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: orch
+  labels:
+    app: orch-api
+spec:
+  ports:
+    - port: 8082
+      targetPort: 8000
+      name: orch
+  selector:
+    app: orch-api
+  type: LoadBalancer
+
+
+---
+
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: orch
+  labels:
+    app: orch-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: orch-api
+    spec:
+      containers:
+      - name: orch
+        image: gengler1123/template_orchestrator
+        imagePullPolicy: Always
+        env:
+          - name: SERVICE_01_ENDPOINT
+            value: "http://service-01:8000"
+          - name: SERVICE_02_ENDPOINT
+            value: "http://service-02:8000"
+          - name: REDIS_ENDPOINT
+            value: "redis"
+          - name: PSQL_HOST
+            value: "psql"
+          - name: PSQL_PORT
+            value: "5432"
+          - name: PSQL_USER
+            value: "postgres"
+          - name: PSQL_PASS
+            value: "password"
+        ports:
+        - containerPort: 8000
+          name: orch-api
