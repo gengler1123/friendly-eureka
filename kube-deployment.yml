@@ -17,13 +17,16 @@ spec:
 ---
 
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: psql
   labels:
     app: template-psql
 spec:
+  selector:
+    matchLabels:
+      app: template-psql
   template:
     metadata:
       labels:
@@ -63,13 +66,16 @@ spec:
 ---
 
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: template-redis
   labels:
     app: template-redis
 spec:
+  selector:
+    matchLabels:
+      app: template-redis
   template:
     metadata:
       labels:
@@ -82,6 +88,52 @@ spec:
         ports:
         - containerPort: 6379
           name: template-redis
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq-api
+spec:
+  ports:
+    - port: 5672
+      targetPort: 5672
+      name: rabbitmq-api
+  selector:
+    app: rabbitmq-api
+  clusterIP: None
+
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-api
+  labels:
+    app: rabbitmq-api
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-api
+    spec:
+      containers:
+      - name: rabbitmq-api
+        image: rabbitmq:3.8.5-alpine
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5672
+          name: api
 
 
 ---
@@ -106,13 +158,16 @@ spec:
 ---
 
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-01
   labels:
     app: service-01-api
 spec:
+  selector:
+    matchLabels:
+      app: service-01-api
   replicas: 5
   template:
     metadata:
@@ -150,13 +205,16 @@ spec:
 ---
 
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: service-02
   labels:
     app: service-02-api
 spec:
+  selector:
+    matchLabels:
+      app: service-02-api
   replicas: 5
   template:
     metadata:
@@ -194,13 +252,16 @@ spec:
 ---
 
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: orch
   labels:
     app: orch-api
 spec:
+  selector:
+    matchLabels:
+      app: orch-api
   replicas: 1
   template:
     metadata:

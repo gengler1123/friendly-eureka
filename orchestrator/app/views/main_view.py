@@ -5,6 +5,7 @@ from datetime import datetime
 import redis
 from os import environ
 import psycopg2 as psql
+import pika
 
 
 @app.route("/")
@@ -14,6 +15,7 @@ def main_view():
     """
     service_01_endpoint = environ.get("SERVICE_01_ENDPOINT", "http://service-01:8000")
     service_02_endpoint = environ.get("SERVICE_02_ENDPOINT", "http://service-02:8000")
+    rabbitmq_endpoint = environ.get("RABBITMQ_ENDPOINT", "http://rabbitmq:5672")
     redis_endpoint = environ.get("REDIS_ENDPOINT")
     psql_host = environ.get("PSQL_HOST")
     psql_port = environ.get("PSQL_PORT")
@@ -29,6 +31,14 @@ def main_view():
     {psql_user}
     {psql_pass}
 """)
+
+    try:
+        connection = pika.BlockingConnection(
+            pika.URLParameters(rabbitmq_endpoint)
+        )
+        rmq_message = "Connection Made"
+    except Exception as e:
+        rmq_message = f"RMQ MEssage: {e}"
 
     try:
         conn = psql.connect(
@@ -48,6 +58,7 @@ def main_view():
         r1_resp = r1.text
     else:
         r1_resp = r1.json()
+
     r2 = get(f"{service_02_endpoint}/heartbeat")
     if r2.status_code != 200:
         r2_resp = r2.text
@@ -68,6 +79,8 @@ def main_view():
             "service_01_resp": r1_resp,
             "service_02_resp": r2_resp,
             "redis_values": values,
-            "db_message": db_message
+            "db_message": db_message,
+            "Made Modificaiton": "YES",
+            "rabbitmq_message": rmq_message
         }
     )
