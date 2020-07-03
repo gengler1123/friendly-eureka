@@ -142,16 +142,16 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: service-01
+  name: engine
   labels:
-    app: service-01-api
+    app: engine-api
 spec:
   ports:
     - port: 8000
       targetPort: 8000
-      name: service-01
+      name: engine
   selector:
-    app: service-01-api
+    app: engine-api
   clusterIP: None
 
 
@@ -161,21 +161,21 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: service-01
+  name: engine
   labels:
-    app: service-01-api
+    app: engine-api
 spec:
   selector:
     matchLabels:
-      app: service-01-api
+      app: engine-api
   replicas: 5
   template:
     metadata:
       labels:
-        app: service-01-api
+        app: engine-api
     spec:
       containers:
-      - name: service-01
+      - name: engine
         image: gengler1123/template_service_01
         imagePullPolicy: Always
         ports:
@@ -274,7 +274,7 @@ spec:
         imagePullPolicy: Always
         env:
           - name: SERVICE_01_ENDPOINT
-            value: "http://service-01:8000"
+            value: "http://engine:8000"
           - name: SERVICE_02_ENDPOINT
             value: "http://service-02:8000"
           - name: REDIS_ENDPOINT

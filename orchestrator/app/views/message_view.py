@@ -1,9 +1,10 @@
 from app import flask_app as app
-from ferry import Ferry
+from carburetor import Carburetor
 import json
 from flask import request
 
-ferry = Ferry()
+
+carburetor = Carburetor()
 
 
 @app.route("/message", methods=["POST"])
@@ -12,10 +13,14 @@ def message_view():
 
 
     """
-    ferry(request)
+    try:
+        carburetor(request)
+        carburetor_message = "Success"
+    except Exception as e:
+        carburetor_message = f"carburetor Exception: {e}"
 
     return json.dumps(
         {
-            "Status": "Called Ferry"
+            "Status": carburetor_message
         }
     )

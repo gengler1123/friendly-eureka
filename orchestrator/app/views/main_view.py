@@ -13,7 +13,7 @@ def main_view():
     """
 
     """
-    service_01_endpoint = environ.get("SERVICE_01_ENDPOINT", "http://service-01:8000")
+    service_01_endpoint = environ.get("SERVICE_01_ENDPOINT", "http://engine:8000")
     service_02_endpoint = environ.get("SERVICE_02_ENDPOINT", "http://service-02:8000")
     rabbitmq_endpoint = environ.get("RABBITMQ_ENDPOINT", "http://rabbitmq:5672")
     redis_endpoint = environ.get("REDIS_ENDPOINT")
@@ -38,7 +38,7 @@ def main_view():
         )
         rmq_message = "Connection Made"
     except Exception as e:
-        rmq_message = f"RMQ MEssage: {e}"
+        rmq_message = f"RMQ Message: {e}"
 
     try:
         conn = psql.connect(
@@ -53,17 +53,23 @@ def main_view():
     except Exception as e:
         db_message = f"Exception: {e}"
 
-    r1 = get(f"{service_01_endpoint}/heartbeat")
-    if r1.status_code != 200:
-        r1_resp = r1.text
-    else:
-        r1_resp = r1.json()
+    try:
+        r1 = get(f"{service_01_endpoint}/heartbeat")
+        if r1.status_code != 200:
+            r1_resp = r1.text
+        else:
+            r1_resp = r1.json()
+    except:
+        r1_resp = {"R1 Error": "R1 Error"}
 
-    r2 = get(f"{service_02_endpoint}/heartbeat")
-    if r2.status_code != 200:
-        r2_resp = r2.text
-    else:
-        r2_resp = r2.json()
+    try:
+        r2 = get(f"{service_02_endpoint}/heartbeat")
+        if r2.status_code != 200:
+            r2_resp = r2.text
+        else:
+            r2_resp = r2.json()
+    except:
+        r2_resp = {"R2 Error": "R2 Error"}
 
     try:
         r = redis.StrictRedis(host=redis_endpoint)

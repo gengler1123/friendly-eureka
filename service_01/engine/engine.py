@@ -1,11 +1,10 @@
 import flask
 
 
-class Ferry:
+class Engine:
     """
 
     """
-
     def __init__(self):
         """
 
@@ -13,10 +12,10 @@ class Ferry:
 
     def __call__(
         self,
-        request: flask.request,
+        _request: flask.request,
         *args, **kwargs
-    ):
+    ) -> dict:
         """
 
         """
-        print("Calling Ferry")
+        return {}
