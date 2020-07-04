@@ -8,3 +8,4 @@ docker push gengler1123/template_orchestrator
 docker push gengler1123/template_service_01
 docker push gengler1123/template_service_02
 docker push gengler1123/template_redis
+docker push gengler1123/convo_ai_www

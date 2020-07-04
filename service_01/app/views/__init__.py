@@ -6,3 +6,4 @@ def load_app():
     print("Loading App Before First Request")
 
 from .heartbeat_view import *
+from .engine_view import *

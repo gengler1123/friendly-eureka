@@ -27,3 +27,9 @@ services:
     image: gengler1123/template_service_02
     ports:
       - "8080:9002"
+
+  www:
+    build: www
+    image: gengler1123/convo_ai_www
+    ports:
+      - "3000:3000"

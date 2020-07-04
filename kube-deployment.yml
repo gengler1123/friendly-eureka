@@ -290,3 +290,46 @@ spec:
         ports:
         - containerPort: 8000
           name: orch-api
+
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: convo-ai-www
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: convo-ai-www
+  template:
+    metadata:
+      labels:
+        app: convo-ai-www
+    spec:
+      containers:
+        - name: convo-ai-www
+          image: gengler1123/convo_ai_www
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      restartPolicy: Always
+
+
+---
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: convo-ai-www
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      nodePort: 31000
+  selector:
+    app: convo-ai-www
