@@ -11,14 +11,18 @@ services:
     image: gengler1123/template_redis
 
   orchestrator:
-    build: orchestrator
+    build:
+      context: .
+      dockerfile: Dockerfile.orchestrator
     image: gengler1123/template_orchestrator
     deploy:
       replicas: 5
 
   service_01:
-    build: service_01
-    image: gengler1123/template_service_01
+    build:
+      context: .
+      dockerfile: Dockerfile.engine
+    image: gengler1123/convo_ai_engine
     ports:
      - "8080:9001"
 

@@ -7,15 +7,23 @@ class Carburetor:
 
     """
 
-    def __init__(self):
+    def __init__(
+            self,
+            engine_endpoint: str = None,
+            *args, **kwargs
+    ):
         """
 
         """
+        if engine_endpoint is None:
+            self.engine_endpoint = "http://engine:8000/engine_call"
+        else:
+            self.engine_endpoint = engine_endpoint
 
     def _send_to_engine(
         self,
-        post_json: dict=None,
-        _parameters: dict=None,
+        post_json: dict = None,
+        _parameters: dict = None,
         *args, **kwargs
     ):
         """
@@ -23,11 +31,11 @@ class Carburetor:
         """
         try:
             resp = post(
-                url="http://engine:8000/engine_call",
-                json=post_json).json()
+                url=self.engine_endpoint,
+                json=post_json
+            ).json()
         except Exception as e:
             resp = {"Engine Exception": f"{e}"}
-
         return resp
 
     def __call__(
@@ -35,7 +43,7 @@ class Carburetor:
         _request: flask.request,
         parameters: dict = None,
         *args, **kwargs
-    ):
+    ) -> dict:
         """
 
         """

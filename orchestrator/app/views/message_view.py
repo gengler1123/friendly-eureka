@@ -23,6 +23,10 @@ def message_view():
     psql_user = environ.get("PSQL_USER")
     psql_pass = environ.get("PSQL_PASS")
 
+    # Get User ID and Parameters
+
+    # Some Second Thing
+
     parameters = {
         "engine_endpoint": service_01_endpoint,
         "rabbitmq_endpoint": rabbitmq_endpoint,
@@ -54,7 +58,8 @@ def message_view():
             "initial_json": initial_json,
             "carb_response": resp,
             "response_text": resp.get("engine_response",{}).get("response_text", "None"),
-            "response_metadata": resp.get("response_metadata", {})
+            "response_metadata": resp.get("response_metadata", {}),
+            "new_orch_build": "True"
         }
     except Exception as e:
         response = {

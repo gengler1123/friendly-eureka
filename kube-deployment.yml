@@ -176,7 +176,7 @@ spec:
     spec:
       containers:
       - name: engine
-        image: gengler1123/template_service_01
+        image: gengler1123/convo_ai_engine
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
