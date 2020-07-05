@@ -1,4 +1,5 @@
 import flask
+from requests import post
 
 
 class Carburetor:
@@ -10,6 +11,24 @@ class Carburetor:
         """
 
         """
+
+    def _send_to_engine(
+        self,
+        post_json: dict=None,
+        _parameters: dict=None,
+        *args, **kwargs
+    ):
+        """
+
+        """
+        try:
+            resp = post(
+                url="http://engine:8000/engine_call",
+                json=post_json).json()
+        except Exception as e:
+            resp = {"Engine Exception": f"{e}"}
+
+        return resp
 
     def __call__(
         self,
@@ -28,4 +47,12 @@ class Carburetor:
 
         request = _request.form.to_dict(flat=False)
 
-        return request
+        resp = self._send_to_engine(
+            post_json=request,
+            _parameters=parameters
+        )
+
+        return {
+            "engine_response": resp,
+            "engine_request": request
+        }

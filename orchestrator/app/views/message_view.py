@@ -29,7 +29,16 @@ def message_view():
         "redis_endpoint": redis_endpoint
     }
     try:
-        carburetor(
+        initial_request = request.form.to_dict(flat=False)
+        initial_json = request.get_json()
+        initial_data = request.data.decode('utf-8')
+    except Exception as e:
+        initial_request = {}
+        initial_json = {}
+        initial_data = ""
+    resp = {"First REsponse": "Hello"}
+    try:
+        resp = carburetor(
             _request=request,
             parameters=parameters
         )
@@ -37,8 +46,26 @@ def message_view():
     except Exception as e:
         carburetor_message = f"carburetor Exception: {e}"
 
-    return json.dumps(
-        {
-            "Status": carburetor_message
+    try:
+        response = {
+            "Status": carburetor_message,
+            "request_form": initial_request,
+            "initial_data": initial_data,
+            "initial_json": initial_json,
+            "carb_response": resp,
+            "response_text": resp.get("response_text", "None"),
+            "response_metadata": resp.get("response_metadata", {})
         }
-    )
+    except Exception as e:
+        response = {
+            "exception": f"{e}"
+        }
+
+    try:
+        resp_to_send = json.dumps(response)
+    except Exception as e:
+        resp_to_send = json.dumps({
+            "Exception": f"{e}"
+        })
+
+    return resp_to_send
