@@ -13,15 +13,17 @@ class App extends React.Component{
         let params = {
             "text": textEntry
         };
+        let readyStateChanged = false;
         xhr.onreadystatechange = function(){
             console.log("Status: ", xhr.status);
             console.log("Response: ", xhr.responseText);
             console.log("Message Sent");
 
-            if (xhr.status === 200) {
+            if (xhr.status === 200 && !readyStateChanged) {
                 let responseRow = tableEntry.insertRow();
                 let responseCell = responseRow.insertCell();
                 responseCell.innerHTML = "Response";
+                readyStateChanged = true;
             }
 
         };
