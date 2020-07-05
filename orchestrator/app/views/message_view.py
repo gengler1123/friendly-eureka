@@ -53,7 +53,7 @@ def message_view():
             "initial_data": initial_data,
             "initial_json": initial_json,
             "carb_response": resp,
-            "response_text": resp.get("response_text", "None"),
+            "response_text": resp.get("engine_response",{}).get("response_text", "None"),
             "response_metadata": resp.get("response_metadata", {})
         }
     except Exception as e:

@@ -16,13 +16,14 @@ class App extends React.Component{
         let readyStateChanged = false;
         xhr.onreadystatechange = function(){
             console.log("Status: ", xhr.status);
-            console.log("Response: ", xhr.responseText);
             console.log("Message Sent");
 
-            if (xhr.status === 200 && !readyStateChanged) {
+            if (xhr.readyState===4 && xhr.status === 200 && !readyStateChanged) {
+                let jsonResponse = JSON.parse(xhr.responseText);
+                console.log("Response Object", xhr.response);
                 let responseRow = tableEntry.insertRow();
                 let responseCell = responseRow.insertCell();
-                responseCell.innerHTML = "Response";
+                responseCell.innerHTML = jsonResponse['response_text'];
                 readyStateChanged = true;
             }
 
